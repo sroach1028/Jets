@@ -7,11 +7,11 @@ public class Bomber extends Jet implements BombsAway{
 	}
 
 	public void fly() {
-		System.out.println(this.getModel()+ " is flying, enroute to enemy target");
+		System.out.println(this.getModel()+ " is enroute to enemy target, awaiting orders");
 	}
 	@Override
 	public void dropBombs() {
-		System.out.println(this.getModel()+" is dropping bombs");
+		System.out.println(this.getModel()+" is bombs away");
 	}
 
 }

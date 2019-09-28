@@ -9,7 +9,7 @@ public class CargoPlane extends Jet implements CargoCarrier{
 
 	@Override
 	public void fly() {
-		System.out.println(this.getModel()+" is flying with precious cargo");
+		System.out.println(this.getModel()+" is flying, delivering the precious cargo");
 	}
 	
 	public void loadCargo() {
