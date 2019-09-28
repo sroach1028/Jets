@@ -6,51 +6,25 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class JetsApp {
-	private Airfield airfield;
+	private Airfield airfield = new Airfield();
 
 	public static void main(String[] args) {
-		Scanner kb = new Scanner(System.in);
 		JetsApp ja = new JetsApp();
-		ja.launch(kb);
-		ja.displayUserMenu();
-		ja.executeChoice(kb.next(), kb);
+		ja.launch();
 
 	}
 
-	private void launch(Scanner kb) {
-		airfield = new Airfield();
-
-		try (BufferedReader bufIn = new BufferedReader(new FileReader("jets.txt"))) {
-			String line;
-			while ((line = bufIn.readLine()) != null) {
-				String[] parts = line.split(", ");
-				if (parts[0].contentEquals("fighter")) {
-					airfield.addJet(new FighterJet(parts[0], Double.parseDouble(parts[1]), Integer.parseInt(parts[2]),
-							Long.parseLong(parts[3])));
-				}
-				if (parts[0].contentEquals("cargo")) {
-					airfield.addJet(new CargoPlane(parts[0], Double.parseDouble(parts[1]), Integer.parseInt(parts[2]),
-							Long.parseLong(parts[3])));
-				}
-				if (parts[0].contentEquals("cessna")) {
-					airfield.addJet(new PropPlane(parts[0], Double.parseDouble(parts[1]), Integer.parseInt(parts[2]),
-							Long.parseLong(parts[3])));
-				}
-
-			}
-
-		} catch (IOException e) {
-			System.err.println(e);
-		}
+	private void launch() {
+		populateAirfield();
+		do {
+			displayUserMenu();
+		} while (executeChoice());
 
 	}
 
-	private void displayUserMenu() {
-		System.out.println(
-				"1. List Fleet\n2. Fly All Jets\n3. View Fastest Jet\n4. View Jet With Longest Range\n5. Load all Cargo Jets\n6. Dogfight!!\n7. Add a Jet to Fleet\n8. Remove a jet from fleet\n9. Quit");
-	}
-
-	private void executeChoice(String choice, Scanner kb) {
+	private boolean executeChoice() {
+		Scanner kb = new Scanner(System.in);
+		String choice = kb.next();
 		switch (choice) {
 		case "1":
 			for (Jet jet : airfield.getJetList()) {
@@ -113,29 +87,74 @@ public class JetsApp {
 			break;
 
 		case "7":
-
+			kb.nextLine();
 			System.out.println("Model: ");
-			String model = kb.next();
+			String model = kb.nextLine();
 			System.out.println("Speed: ");
 			double speed = Double.parseDouble(kb.next());
 			System.out.println("Range: ");
 			int range = Integer.parseInt(kb.next());
 			System.out.println("Price: ");
 			long price = Long.parseLong(kb.next());
-			airfield.addJet(new PropPlane(model, speed, range, price));
-
+			airfield.addJet(new GeneralAviation(model, speed, range, price));
+			break;
 		case "8":
 			for (int i = 0; i < airfield.getJetList().size(); i++) {
-				System.out.println(i + ": " + airfield.getJetList().get(i));
+				System.out.println((i+1) + ": " + airfield.getJetList().get(i));
 			}
-			airfield.getJetList().remove(kb.nextInt());
+			airfield.getJetList().remove(kb.nextInt()-1);
 
 			break;
 		case "9":
-			System.out.println("Goodbye!!");
-			break;
+			System.out.println("Leaving the Airfield, good day");
+			kb.close();
+			return false;
 
 		}
-		// TODO Auto-generated method stub
+		System.out.println("\npress any key to return to main menu: ");
+		kb.next();
+		return true;
+	}
+
+	private void displayUserMenu() {
+		System.out.println("1. List Fleet\n2. Fly All Jets\n3. View Fastest Jet\n4. View Jet With Longest Range\n"
+				+ "5. Load all Cargo Jets\n6. Dogfight!!\n7. Add a Jet to Fleet\n8. Remove a jet from fleet\n9. Quit");
+	}
+
+	private void populateAirfield() {
+		String line;
+		String type;
+		try (BufferedReader bufIn = new BufferedReader(new FileReader("jets.txt"))) {
+			while ((line = bufIn.readLine()) != null) {
+				String[] parts = line.split(", ");
+				type = parts[0];
+				switch (type.charAt(0)) {
+
+				case 'F':
+
+					airfield.addJet(new FighterJet(parts[0], Double.parseDouble(parts[1]), Integer.parseInt(parts[2]),
+							Long.parseLong(parts[3])));
+
+					break;
+				case 'C':
+					airfield.addJet(new CargoPlane(parts[0], Double.parseDouble(parts[1]), Integer.parseInt(parts[2]),
+							Long.parseLong(parts[3])));
+					break;
+				case 'B':
+					airfield.addJet(new Bomber(parts[0], Double.parseDouble(parts[1]), Integer.parseInt(parts[2]),
+							Long.parseLong(parts[3])));
+					break;
+				default:
+					airfield.addJet(new GeneralAviation(parts[0], Double.parseDouble(parts[1]), Integer.parseInt(parts[2]),
+							Long.parseLong(parts[3])));
+					break;
+				}
+			}
+		}
+
+		catch (IOException e) {
+			System.err.println(e);
+		}
+
 	}
 }
