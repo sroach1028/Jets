@@ -152,6 +152,9 @@ public class JetsApp {
 			System.out.println("Leaving the Airfield, good day");
 			kb.close();
 			return false;
+		default:
+			System.out.println("Invalid entry. Try again");
+			return true;
 		}
 		System.out.println("\npress any key to return to main menu: ");
 		kb.next();
