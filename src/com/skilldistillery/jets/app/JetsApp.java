@@ -19,7 +19,6 @@ public class JetsApp {
 		do {
 			displayUserMenu();
 		} while (executeChoice());
-
 	}
 
 	private void populateAirfield() {
@@ -41,6 +40,10 @@ public class JetsApp {
 					airfield.addJet(new Bomber(parts[0], Double.parseDouble(parts[1]), Integer.parseInt(parts[2]),
 							Long.parseLong(parts[3])));
 					break;
+				case 'R':
+					airfield.addJet(new UAV(parts[0], Double.parseDouble(parts[1]), Integer.parseInt(parts[2]),
+							Long.parseLong(parts[3])));
+					break;
 				default:
 					airfield.addJet(new GeneralAviation(parts[0], Double.parseDouble(parts[1]),
 							Integer.parseInt(parts[2]), Long.parseLong(parts[3])));
@@ -48,16 +51,14 @@ public class JetsApp {
 				}
 			}
 		}
-
 		catch (IOException e) {
 			System.err.println(e);
 		}
-
 	}
 
 	private void displayUserMenu() {
 		System.out.println("1. List Fleet\n2. Fly All Jets\n3. View Fastest Jet\n4. View Jet With Longest Range\n"
-				+ "5. Load all Cargo Jets\n6. Dogfight!!\n7. Drop Bombs\n8. Add a Jet to Fleet\n9. Remove a jet from fleet\n10. Quit");
+				+ "5. Load all Cargo Jets\n6. Dogfight!!\n7. Drop Bombs\n8. Spy on enemies\n9. Add a Jet to Fleet\n10. Remove a jet from fleet\n11. Quit");
 	}
 
 	private boolean executeChoice() {
@@ -67,15 +68,21 @@ public class JetsApp {
 		case "1":
 			System.out.println("Jets on the Airfield\n" + "-----------------------------------------");
 			for (Jet jet : airfield.getJetList()) {
-
 				System.out.println(jet);
 			}
 			break;
+
 		case "2":
 			for (Jet jet : airfield.getJetList()) {
-
+				jet.taxi();
+				}
+			System.out.println("\nPress any key to clear the fleet for takeoff");
+			kb.next();
+			for (Jet jet : airfield.getJetList()) {
 				jet.fly();
-			}
+				
+			}	
+			
 			break;
 		case "3":
 			double fastestSpeed = 0.0;
@@ -84,7 +91,6 @@ public class JetsApp {
 				if (jet.getSpeed() > fastestSpeed) {
 					fastestSpeed = jet.getSpeed();
 				}
-
 			}
 			for (Jet jet : airfield.getJetList()) {
 				if (jet.getSpeed() == fastestSpeed) {
@@ -99,7 +105,6 @@ public class JetsApp {
 				if (jet.getRange() > longestRange) {
 					longestRange = jet.getRange();
 				}
-
 			}
 			for (Jet jet : airfield.getJetList()) {
 				if (jet.getRange() == longestRange) {
@@ -108,21 +113,17 @@ public class JetsApp {
 			}
 			break;
 		case "5":
-
 			for (Jet jet : airfield.getJetList()) {
 				if (jet instanceof CargoPlane) {
 					((CargoPlane) jet).loadCargo();
-
 				}
 			}
 			break;
 
 		case "6":
-
 			for (Jet jet : airfield.getJetList()) {
 				if (jet instanceof FighterJet) {
 					((FighterJet) jet).fight();
-
 				}
 			}
 			break;
@@ -130,27 +131,33 @@ public class JetsApp {
 			for (Jet jet : airfield.getJetList()) {
 				if (jet instanceof Bomber) {
 					((Bomber) jet).dropBombs();
-
 				}
 			}
 			break;
+			
 		case "8":
-			addJet(kb);
+			for (Jet jet : airfield.getJetList()) {
+				if(jet instanceof UAV) {
+					((UAV) jet).surveil();
+				}
+			}
 			break;
 		case "9":
-			removeJet(kb);
+			addJet(kb);
 			break;
 		case "10":
+			removeJet(kb);
+			break;
+		case "11":
 			System.out.println("Leaving the Airfield, good day");
 			kb.close();
 			return false;
-
 		}
 		System.out.println("\npress any key to return to main menu: ");
 		kb.next();
 		return true;
 	}
-
+	
 	public void addJet(Scanner kb) {
 		kb.nextLine();
 		System.out.println("Model: ");
@@ -162,9 +169,8 @@ public class JetsApp {
 		System.out.println("Price: ");
 		long price = Long.parseLong(kb.next());
 		airfield.addJet(new GeneralAviation(model, speed, range, price));
-
 	}
-
+	
 	public void removeJet(Scanner kb) {
 		int i;
 		for (i = 0; i < airfield.getJetList().size(); i++) {

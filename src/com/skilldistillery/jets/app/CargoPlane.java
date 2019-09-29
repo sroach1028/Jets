@@ -6,10 +6,13 @@ public class CargoPlane extends Jet implements CargoCarrier{
 		super(model, speed, range, price);
 		// TODO Auto-generated constructor stub
 	}
-
+	@Override
+	public void taxi() {
+		System.out.println(this.getModel()+ " is taxiing for takeoff, ready to go");
+	}
 	@Override
 	public void fly() {
-		System.out.println(this.getModel()+" is flying, delivering the precious cargo");
+		System.out.println(this.getModel()+" is enroute delivering the precious cargo");
 	}
 	
 	public void loadCargo() {

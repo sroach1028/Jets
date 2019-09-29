@@ -13,10 +13,13 @@ public abstract class Jet {
 		this.range = range;
 		this.price = price;
 	}
-	
-	public void fly() {
-		System.out.println("jet is flying");
+	public void taxi() {
+		System.out.println("airplane is taxiing");
 	}
+	public void fly() {
+		System.out.println("airplane is flying");
+	}
+	
 	
 	public double getSpeedInMach() {
 		double speedInMach = 0.0;

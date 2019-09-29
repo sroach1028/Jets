@@ -7,8 +7,13 @@ public class GeneralAviation extends Jet{
 	
 	}
 	@Override
+	public void taxi() {
+		System.out.println(this.getModel()+" is taxiing for takeoff, ready to go");
+	}
+	
+	@Override
 	public void fly() {
-		System.out.println(this.getModel()+" is flying, trying not to crash");
+		System.out.println(this.getModel()+" has completed takeoff, trying not to crash");
 	}
 
 }
